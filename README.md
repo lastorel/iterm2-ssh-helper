@@ -46,6 +46,8 @@ hosts:
 - `groups` section defines medium priority rules for child sessions
 - `hosts` section defines host name/address and high priority rules
 
+> All generated profiles inherit Default iTerm2 Profile settings.
+
 ### Argument reference
 
 - `ip` - address or fqdn to connect
