@@ -62,7 +62,7 @@ hosts:
 1. iTerm2 > Scripts > Manage > Install Python Runtime
 2. `~/Library/Application\ Support/iTerm2/iterm2env/versions/*LASTEST_VERSION*/bin/python3 -m pip install pyyaml`
 3. `cd ~/Library/Application\ Support/iTerm2/Scripts`
-4. `git clone git@github.com:lastorel/iterm2-ssh-helper.git` (or your preferred method)
+4. `git clone https://github.com/lastorel/iterm2-ssh-helper.git` (or your preferred method)
 5. create and compose your inventory file at `~/Documents/devices.yaml`
 6. iTerm2 > Scripts > execute new `manager_sync.py`
 7. wait a few seconds
