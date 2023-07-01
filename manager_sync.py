@@ -7,7 +7,9 @@ from typing import Optional, Union, List
 import iterm2
 
 
-INVENTORY_FILE = f"{Path.home()}/Documents/devices.yaml"
+INVENTORY_PATH = f"{Path.home()}/Documents/"
+
+# todo add option non_idle "Idle Period" "Send Code When Idle" "Idle Code"
 
 
 def generate_guid() -> str:
@@ -16,9 +18,14 @@ def generate_guid() -> str:
 
 
 def get_inventory() -> dict:
-    filename = INVENTORY_FILE
-    with open(filename) as f:
-        data = yaml.safe_load(f)
+    data = {}
+    for file in Path(INVENTORY_PATH).iterdir():
+        if not file.is_file():
+            continue
+        if "devices.yaml" == file.name or ".iprofiles" in file.name.lower():
+            with open(file.as_posix()) as f:
+                data[file.name] = yaml.safe_load(f)
+
     return data
 
 
@@ -109,7 +116,8 @@ class Profile(object):
 
     def json(self) -> dict:
         data = {
-            "Title Components": 34,
+            "Title Components": 544,
+            "Allow Title Setting": False,
             "Name": self.hostname,
             "Custom Command": "Yes",
         }
@@ -138,30 +146,36 @@ def dump_profiles(profiles: List[Profile]) -> None:
 async def main(connection):
     try:
         inventory = get_inventory()
-        if "hosts" not in inventory or not inventory:
+        if not inventory:
             raise ValueError("Inventory can not be empty")
+        for file in inventory:
+            if not inventory[file] or "hosts" not in inventory[file]:
+                raise ValueError("Inventory can not be empty")
     except Exception as exc:
         alert = iterm2.alert.Alert(title="Error", subtitle=str(exc))
         await alert.async_run(connection)
         return
 
     profiles = []
-    for hostname, host_data in inventory["hosts"].items():
-        profile = Profile(
-            hostname=hostname, host_data=host_data, defaults=inventory.get("defaults"), groups=inventory.get("groups")
-        )
-        profiles.append(profile)
-
     created_profiles = get_profiles()
-    if created_profiles:
+
+    for file in inventory:
+        for hostname, host_data in inventory[file]["hosts"].items():
+            profile = Profile(
+                hostname=hostname, host_data=host_data,
+                defaults=inventory[file].get("defaults"), groups=inventory[file].get("groups")
+            )
+            profiles.append(profile)
+
+        if created_profiles:
+            for profile in profiles:
+                for c_profile in created_profiles:
+                    if profile.hostname == c_profile["Name"]:
+                        profile.guid = c_profile["Guid"]
+                        break
         for profile in profiles:
-            for c_profile in created_profiles:
-                if profile.hostname == c_profile["Name"]:
-                    profile.guid = c_profile["Guid"]
-                    break
-    for profile in profiles:
-        if not profile.guid:
-            profile.generate_guid()
+            if not profile.guid:
+                profile.generate_guid()
 
     dump_profiles(profiles)
 
