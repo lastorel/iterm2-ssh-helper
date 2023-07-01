@@ -47,6 +47,8 @@ hosts:
 - `groups` section defines medium priority rules for child sessions
 - `hosts` section defines host name/address and high priority rules
 
+> All generated profiles inherit Default iTerm2 Profile settings.
+
 **New in v0.2:**
 
 You can create many inventory files with profiles in `~/Documents/` with `.iprofiles` extension!
@@ -69,7 +71,7 @@ You can create many inventory files with profiles in `~/Documents/` with `.iprof
 1. iTerm2 > Scripts > Manage > Install Python Runtime
 2. `~/Library/Application\ Support/iTerm2/iterm2env/versions/*LASTEST_VERSION*/bin/python3 -m pip install pyyaml`
 3. `cd ~/Library/Application\ Support/iTerm2/Scripts`
-4. `git clone git@github.com:lastorel/iterm2-ssh-helper.git` (or your preferred method)
+4. `git clone https://github.com/lastorel/iterm2-ssh-helper.git` (or your preferred method)
 5. create and compose your YAML inventory file at `~/Documents/devices.yaml` or `~/Documents/workspace-example.iprofiles`
 6. iTerm2 > Scripts > execute new `manager_sync.py`
 7. wait a few seconds
