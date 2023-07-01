@@ -78,6 +78,7 @@ class Profile(object):
         self.transport: Optional[str] = None
         self.open_pass_manager: Optional[bool] = None
         self.extra_args: Optional[str] = None
+        self.keepalive_interval = 0
 
         self.tags = []
         self.is_parent = False
@@ -89,6 +90,7 @@ class Profile(object):
             self.transport = defaults.get("transport")
             self.open_pass_manager = defaults.get("open_pass_manager")
             self.extra_args = defaults.get("extra_args")
+            self.keepalive_interval = defaults.get("keepalive_interval", 0)
 
         if host_data.get("groups"):
             for group in host_data["groups"]:
@@ -101,6 +103,10 @@ class Profile(object):
                         if "open_pass_manager" in groups[group] else self.open_pass_manager
                     )
                     self.extra_args = groups[group]["extra_args"] if "extra_args" in groups[group] else self.extra_args
+                    self.keepalive_interval = (
+                        groups[group]["keepalive_interval"]
+                        if "keepalive_interval" in groups[group] else self.keepalive_interval
+                    )
                     self.tags.append(group)
 
         self.user = host_data["user"] if "user" in host_data else self.user
@@ -110,6 +116,9 @@ class Profile(object):
             host_data["open_pass_manager"] if "open_pass_manager" in host_data else self.open_pass_manager
         )
         self.extra_args = host_data["extra_args"] if "extra_args" in host_data else self.extra_args
+        self.keepalive_interval = (
+            host_data["keepalive_interval"] if "keepalive_interval" in host_data else self.keepalive_interval
+        )
 
     def generate_guid(self) -> None:
         self.guid = generate_guid()
@@ -134,6 +143,10 @@ class Profile(object):
             port=self.port,
             extra_args=self.extra_args,
         )
+        if self.keepalive_interval:
+            data["Send Code When Idle"] = True
+            data["Idle Code"] = 10
+            data["Idle Period"] = self.keepalive_interval
 
         return data
 

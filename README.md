@@ -1,4 +1,4 @@
-# iterm2-ssh-helper v0.1
+# iterm2-ssh-helper v0.2
 
 Simplify your set of predefined SSH connections for iTerm2 on MacOS like session manager.
 
@@ -22,6 +22,7 @@ defaults:
 groups:
   offices:
     user: ubuntu
+    keepalive_interval: 240
   dc1: {}
   core:
     port: 9922
@@ -58,6 +59,10 @@ You can create many inventory files with profiles in `~/Documents/` with `.iprof
 - `transport` - protocol to use (only `ssh2` supported at the moment)
 - `open_pass_manager` - set `true` to automatically open iTerm2 password manager after connect
 - `extra_args` - append some extra options to execute in shell
+
+**New in v0.2:**
+
+- `keepalive_interval` - When idle, send LF (`\n`) every X seconds (USE WITH ATTENTION!)
 
 ## Installation
 
