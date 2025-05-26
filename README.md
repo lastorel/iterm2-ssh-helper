@@ -1,4 +1,4 @@
-# iterm2-ssh-helper v0.2
+# iterm2-ssh-helper v0.3
 
 Simplify your set of predefined SSH connections for iTerm2 on MacOS like session manager.
 
