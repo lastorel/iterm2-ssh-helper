@@ -23,6 +23,7 @@ groups:
   offices:
     user: ubuntu
     keepalive_interval: 240
+    terminal_type: xterm
   dc1: {}
   core:
     port: 9922
@@ -40,7 +41,7 @@ hosts:
     ip: 10.14.100.1
     port: 7722
     open_pass_manager: false
-    extra_args: -s netconf
+    extra_args: -oCiphers=3des-cbc -s netconf
     groups: [offices]
 ```
 - `defaults` section defines base low priority rule for each session
@@ -65,6 +66,10 @@ You can create many inventory files with profiles in `~/Documents/` with `.iprof
 **New in v0.2:**
 
 - `keepalive_interval` - When idle, send LF (`\n`) every X seconds (USE WITH ATTENTION!)
+
+**New in v0.3:**
+
+- `terminal_type` - Report Terminal type (Emulation) choose from [vt100, xterm, xterm-new, xterm-256color, ansi, rxvt, linux]
 
 ## Installation
 

@@ -9,8 +9,6 @@ import iterm2
 
 INVENTORY_PATH = f"{Path.home()}/Documents/"
 
-# todo add option non_idle "Idle Period" "Send Code When Idle" "Idle Code"
-
 
 def generate_guid() -> str:
     r = subprocess.run("uuidgen", capture_output=True, encoding="utf-8")
@@ -91,6 +89,7 @@ class Profile(object):
             self.open_pass_manager = defaults.get("open_pass_manager")
             self.extra_args = defaults.get("extra_args")
             self.keepalive_interval = defaults.get("keepalive_interval", 0)
+            self.terminal_type = defaults.get("terminal_type", "xterm-256color")
 
         if host_data.get("groups"):
             for group in host_data["groups"]:
@@ -107,6 +106,10 @@ class Profile(object):
                         groups[group]["keepalive_interval"]
                         if "keepalive_interval" in groups[group] else self.keepalive_interval
                     )
+                    self.terminal_type = (
+                        groups[group]["terminal_type"]
+                        if "terminal_type" in groups[group] else self.terminal_type
+                    )
                     self.tags.append(group)
 
         self.user = host_data["user"] if "user" in host_data else self.user
@@ -118,6 +121,9 @@ class Profile(object):
         self.extra_args = host_data["extra_args"] if "extra_args" in host_data else self.extra_args
         self.keepalive_interval = (
             host_data["keepalive_interval"] if "keepalive_interval" in host_data else self.keepalive_interval
+        )
+        self.terminal_type = (
+            host_data["terminal_type"] if "terminal_type" in host_data else self.terminal_type
         )
 
     def generate_guid(self) -> None:
@@ -147,6 +153,8 @@ class Profile(object):
             data["Send Code When Idle"] = True
             data["Idle Code"] = 10
             data["Idle Period"] = self.keepalive_interval
+        if self.terminal_type:
+            data["Terminal Type"] = self.terminal_type
 
         return data
 
